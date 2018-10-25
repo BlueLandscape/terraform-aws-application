@@ -5,7 +5,7 @@ This module is intended to create a generic way of managing infrastructure for
 your django application on AWS.
 
 It is opinionated, and it's intended to setup your application infrastructure
-in the best possible way concerning default standards.
+in the best and fastest possible way concerning default standards.
 
 In short it wil completely setup your application with:
 
@@ -18,8 +18,7 @@ In short it wil completely setup your application with:
 * ElastiCache cluster
 * ELB to distribute requests across the EC2 instances
 
-General setup and ideas are copied from https://github
-.com/dpetzold/terraform-django-ecs.
+General setup and ideas are copied from https://github.com/dpetzold/terraform-django-ecs.
 
 Quickstart
 ----------
@@ -59,7 +58,7 @@ You should create a terraform.tfvars or set environment variables to override
 some basic variables.
 
 project_name
-    Project name, using hyphens and lowercase characters
+  Project name, using hyphens and lowercase characters
 
 Initialize the terraform.
 
