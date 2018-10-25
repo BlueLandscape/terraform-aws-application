@@ -3,9 +3,9 @@ output "vpc_id" {
 }
 
 output "public_subnet_id" {
-    value = "${aws_subnet.main-public.id}"
+    value = "${aws_subnet.main-public.*.id}"
 }
 
 output "private_subnet_id" {
-    value = "${aws_subnet.main-private.id}"
+    value = "${aws_subnet.main-private.*.id}"
 }
