@@ -10,6 +10,13 @@ resource "aws_security_group" "alb" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    protocol    = "tcp"
+    from_port   = 443
+    to_port     = 443
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   egress {
     from_port = 0
     to_port   = 0
@@ -70,6 +77,20 @@ resource "aws_alb_listener" "front_end" {
   }
 }
 
+resource "aws_alb_listener" "front_end_https" {
+	load_balancer_arn = "${aws_alb.main.id}"
+	port			  =	"443"
+	protocol		  =	"HTTPS"
+	ssl_policy		  =	"ELBSecurityPolicy-2016-08"
+	certificate_arn	  =	"${aws_acm_certificate.certificate.arn}"
+
+	default_action {
+		target_group_arn  =	"${aws_alb_target_group.app.id}"
+		type			  =	"forward"
+	}
+}
+
+
 resource "aws_ecs_cluster" "main" {
   name = "${var.project_name}-ecs-cluster"
 }
@@ -90,6 +111,14 @@ resource "aws_ecs_task_definition" "app" {
     "memory": ${var.fargate_memory},
     "name": "${var.project_name}-app",
     "networkMode": "awsvpc",
+   "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+            "awslogs-group": "${var.project_name}",
+            "awslogs-region": "${var.aws_region}",
+            "awslogs-stream-prefix": "ecs"
+        }
+    },
     "portMappings": [
       {
         "containerPort": ${var.app_port},
@@ -104,6 +133,46 @@ resource "aws_ecs_task_definition" "app" {
       {
         "name": "APPLICATION_RUN_TYPE",
         "value": "uwsgi"
+      },
+      {
+        "name": "DEBUG",
+        "value": "${var.application_debug}"
+      },
+      {
+        "name": "DATABASE_TYPE",
+        "value": "postgresql"
+      },
+      {
+        "name": "DATABASE_HOST",
+        "value": "rds.blue-landscape-internal"
+      },
+      {
+        "name": "DATABASE_NAME",
+        "value": "db_${replace(var.project_name, "-", "_")}"
+      },
+      {
+        "name": "DATABASE_USER",
+        "value": "user_${replace(var.project_name, "-", "_")}"
+      },
+      {
+        "name": "DATABASE_PASSWORD",
+        "value": "${var.database_password}"
+      },
+      {
+        "name": "AWS_ACCESS_KEY_ID",
+        "value": "${var.aws_access_key_id}"
+      },
+      {
+        "name": "AWS_SECRET_ACCESS_KEY",
+        "value": "${var.aws_secret_access_key}"
+      },
+      {
+        "name": "AWS_STORAGE_BUCKET_NAME",
+        "value": "${var.project_name}-${var.environment}-static"
+      },
+      {
+        "name": "AWS_S3_CUSTOM_DOMAIN",
+        "value": "static.${var.domain_name}"
       }
     ]
   }

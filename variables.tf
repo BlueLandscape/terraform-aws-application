@@ -3,6 +3,14 @@ variable "project_name" {
   default = "project"
 }
 
+variable "domain_name" {
+  description = "Domain."
+}
+
+variable "environment" {
+  description = "Environment"
+}
+
 variable "az_count" {
   description = "Number of AZs to cover in a given AWS region"
   default     = "2"
@@ -14,7 +22,7 @@ variable "app_image" {
 
 variable "app_port" {
   description = "Port exposed by the docker image to redirect traffic to"
-  default     = 80
+  default     = 8080
 }
 
 variable "app_count" {
@@ -93,4 +101,21 @@ variable elasticache_maintenance_window {
 variable elasticache_instance_type {
   description = "Specifies the instance type for the cache instance."
   default = "cache.t2.micro"
+}
+
+variable google_site_verification {
+  description = "Google site verification code"
+}
+
+variable aws_access_key_id {
+  description = "AWS access key id."
+}
+
+variable aws_secret_access_key {
+  description = "AWS secret access key."
+}
+
+variable application_debug {
+  description = "Debug mode for the application."
+  default = "False"
 }

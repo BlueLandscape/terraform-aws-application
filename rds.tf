@@ -9,12 +9,21 @@ resource "aws_security_group" "rds" {
     protocol    = "-1"
     cidr_blocks = [ "0.0.0.0/0" ]
   }
+
   ingress {
       from_port = 5432
       to_port = 5432
       protocol = "tcp"
       cidr_blocks = ["10.0.0.0/8"]
   }
+
+  ingress {
+      from_port = 5432
+      to_port = 5432
+      protocol = "tcp"
+      cidr_blocks = ["145.131.182.137/32"]
+  }
+
   tags {
     Name = "${var.project_name}-rds-sg"
   }
@@ -44,6 +53,7 @@ resource "aws_db_instance" "rds_instance" {
     final_snapshot_identifier = "final-snapshot"
     skip_final_snapshot = true
     multi_az = false
+    publicly_accessible = true
 
     tags {
         Name = "${var.project_name}-rds"
