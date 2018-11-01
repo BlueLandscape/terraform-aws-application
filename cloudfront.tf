@@ -17,7 +17,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 
   enabled             = true
   is_ipv6_enabled     = true
-  comment             = "Cloudfront for ${var.project_name}"
+  comment             = "Static files for ${var.project_name}"
 
   aliases = ["static.${var.domain_name}",]
 
